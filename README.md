@@ -10,7 +10,7 @@ Simple Account, Contact, and Lead triggers that move Chatter Files to master rec
 As of this writing, Salesforce does not preserve Chatter or related Files during merge operation. The Files are left orphaned.
 
 Inspired by [Gorav Seth](https://twitter.com/goravseth)'s realization of this on [Success Community](https://success.salesforce.com/0D53A00002uKsks),
-I developed these simple triggers to demonstrate how to preserve and carry over the [Chatter Files](https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_contentdocument.htm)) to the master record post-merge.
+I developed these simple triggers to demonstrate how to preserve and carry over the [Chatter Files](https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_contentdocument.htm) to the master record post-merge.
 
 # Usage
 
