@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	<types>
+		<members>AccountMergeTrigger</members>
+		<members>ContactMergeTrigger</members>
+		<members>LeadMergeTrigger</members>
+		<name>ApexTrigger</name>
+	</types>
+	<types>
+		<members>SObjectFileMergeTriggerHandler</members>
+		<members>SObjectFileMergeTriggerHandlerTest</members>
+		<name>ApexClass</name>
+	</types>
+	<version>38.0</version>
+</Package>
