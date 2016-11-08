@@ -1,4 +1,4 @@
-# Share Chatter Files to Master Record on Merge
+# Preserve Chatter Files on Account, Contact, or Lead Merge
 
 Simple Account, Contact, and Lead triggers that move Chatter Files to master record upon being merged.
 
