@@ -6,10 +6,10 @@
         <name>ApexClass</name>
     </types>
     <types>
-		<members>AccountMergeTrigger</members>
-		<members>ContactMergeTrigger</members>
-		<members>LeadMergeTrigger</members>
-		<name>ApexTrigger</name>
+        <members>AccountMergeTrigger</members>
+        <members>ContactMergeTrigger</members>
+        <members>LeadMergeTrigger</members>
+        <name>ApexTrigger</name>
 	</types>
 	<types>
         <members>Preserve_Files_On_Merge_Settings__c.Enable_Account_Trigger__c</members>
