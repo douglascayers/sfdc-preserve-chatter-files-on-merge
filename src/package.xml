@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-	<types>
+    <types>
         <members>SObjectFileMergeTriggerHandler</members>
         <members>SObjectFileMergeTriggerHandlerTest</members>
         <name>ApexClass</name>
@@ -10,16 +10,16 @@
         <members>ContactMergeTrigger</members>
         <members>LeadMergeTrigger</members>
         <name>ApexTrigger</name>
-	</types>
-	<types>
+    </types>
+    <types>
         <members>Preserve_Files_On_Merge_Settings__c.Enable_Account_Trigger__c</members>
         <members>Preserve_Files_On_Merge_Settings__c.Enable_Contact_Trigger__c</members>
         <members>Preserve_Files_On_Merge_Settings__c.Enable_Lead_Trigger__c</members>
         <name>CustomField</name>
-	</types>
+    </types>
     <types>
         <members>Preserve_Files_On_Merge_Settings__c</members>
         <name>CustomObject</name>
     </types>
-	<version>40.0</version>
+    <version>40.0</version>
 </Package>
