@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Toggle which triggers are enabled on Account, Contact, and Lead if you want their files shared to the master record post-merge.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Enable_Account_Trigger__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</inlineHelpText>
+        <label>Enable Account Trigger</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Contact_Trigger__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</inlineHelpText>
+        <label>Enable Contact Trigger</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Lead_Trigger__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When enabled then Salesforce Files are shared to the master record in a merge operation. That is, a ContentDocumentLink is created between the file and the master record.</inlineHelpText>
+        <label>Enable Lead Trigger</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Preserve Files On Merge Settings</label>
+    <visibility>Public</visibility>
+</CustomObject>

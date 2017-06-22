@@ -13,6 +13,10 @@
  */
 trigger AccountMergeTrigger on Account ( before delete, after delete ) {
 
-    new SObjectFileMergeTriggerHandler().handleMerge();
+    Preserve_Files_On_Merge_Settings__c settings = Preserve_Files_On_Merge_Settings__c.getInstance();
+
+    if ( settings.Enable_Account_Trigger__c ) {
+        new SObjectFileMergeTriggerHandler().handleMerge();
+    }
 
 }
