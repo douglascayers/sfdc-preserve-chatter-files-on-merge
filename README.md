@@ -33,20 +33,26 @@ You may install the unmanaged code from GitHub and make any desired adjustments.
 * [Deploy from Github](https://githubsfdeploy.herokuapp.com)
 
 
-Integrating into Apex Trigger Framework
----------------------------------------
+Getting Started
+---------------
+1. Deploy the package using one of the installation links above.
+2. By default, all three triggers for Account, Contact, and Lead objects are enabled. If you want to disable the merge logic at any time then navigate to custom setting **Preserve Files On Merge Settings** and toggle the desired trigger.
+3. Go merge two or more Accounts, Contacts, or Leads that have related files.
 
-If you deploy the unmanaged code from GitHub rather than install as managed package, here is how you can integrate this logic into your own trigger design. Deploy the triggers as-is, or integrate them into your own Apex trigger framework, to simply call the `SObjectFileMergeTriggerHandler` class for both the `before delete` and `after delete` trigger events.
+![screen shot](images/custom_settings.png)
 
-    trigger AccountMergeTrigger on Account ( before delete, after delete ) {
-        new SObjectFileMergeTriggerHandler().handleMerge();
-    }
+An account with a file:
+![screen shot](images/account1.png)
 
-Technically, you can call the code for all events and the handler knows what to do, but minimally both the before/after delete events must be included.
+A duplicate account with different file:
+![screen shot](images/account2.png)
 
+Select accounts to merge:
+![screen shot](images/merge1.png)
 
-Notice
-======
+Select master record:
+![screen shot](images/merge2.png)
 
-This only supports Accounts, Contacts, and Leads. Or more specifically, any SObject that has `MasterRecordId` field
-that designates the surviving record in a merge operation.
+Merge accounts and preserve related files:
+![screen shot](images/merge3.png)
+
