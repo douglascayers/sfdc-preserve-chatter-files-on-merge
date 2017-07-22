@@ -7,6 +7,57 @@
 private class SObjectFileMergeTriggerHandlerTest {
 
     @isTest
+    static void test_merge_accounts_document_already_shared() {
+
+        Preserve_Files_On_Merge_Settings__c settings = Preserve_Files_On_Merge_Settings__c.getInstance();
+        settings.Enable_Account_Trigger__c = true;
+        upsert settings;
+
+        Account acct1 = new Account(
+            name = 'Account 1'
+        );
+
+        Account acct2 = new Account(
+            name = 'Account 2'
+        );
+
+        insert new List<Account>{ acct1, acct2 };
+
+        ContentVersion cv = new ContentVersion(
+            versionData = Blob.valueOf( 'Hello World' ),
+            title = 'Message',
+            pathOnClient = '/'
+        );
+
+        insert cv;
+
+        cv = [ SELECT id, contentDocumentId FROM ContentVersion WHERE id = :cv.id ];
+
+        ContentDocumentLink cdl1 = new ContentDocumentLink(
+            linkedEntityId = acct1.id,
+            contentDocumentId = cv.contentDocumentId,
+            shareType = 'V'
+        );
+
+        ContentDocumentLink cdl2 = new ContentDocumentLink(
+            linkedEntityId = acct2.id,
+            contentDocumentId = cv.contentDocumentId,
+            shareType = 'V'
+        );
+
+        insert new List<ContentDocumentLink>{ cdl1, cdl2 };
+
+        Test.startTest();
+
+        Database.merge( acct1, acct2 );
+
+        Test.stopTest();
+
+        System.assertEquals( 1, [ SELECT count() FROM ContentDocumentLink WHERE linkedEntityId = :acct1.id ] );
+
+    }
+
+    @isTest
     static void test_merge_accounts_trigger_enabled() {
 
         Preserve_Files_On_Merge_Settings__c settings = Preserve_Files_On_Merge_Settings__c.getInstance();
