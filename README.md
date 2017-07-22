@@ -18,11 +18,15 @@ Related Ideas:
 Packaged Release History
 ========================
 
-Release 1.1 (latest)
+Release 1.2 (current)
 -----------
 * Install package
-  * [Production URL](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf40000004kVq)
-  * [Sandbox URL](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf40000004kVq)
+  * [Production URL](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Thx)
+  * [Sandbox URL](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Thx)
+* Avoids attempting to re-share document to master record if document is already shared to it ([issue 1](https://github.com/DouglasCAyers/sfdc-preserve-chatter-files-on-merge/issues/1))
+
+Release 1.1
+-----------
 * Initial managed package offering
 
 Installing the Source Code (Developers)
