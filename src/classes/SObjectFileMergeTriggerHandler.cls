@@ -15,6 +15,8 @@ public with sharing class SObjectFileMergeTriggerHandler {
     // map values = related content documents
     private static Map<ID, List<ContentDocumentLink>> contentDocumentLinksMap = new Map<ID, List<ContentDocumentLink>>();
 
+    // -----------------------------------------------------
+
     /**
      * Rather than repeat these same lines of code in each
      * trigger for Accounts, Contacts, and Leads, this lets
@@ -42,6 +44,8 @@ public with sharing class SObjectFileMergeTriggerHandler {
 
     }
 
+    // -----------------------------------------------------
+
     /**
      * Remember all the content document links for the records being deleted
      * in the event that the records are being deleted due to merge event.
@@ -54,8 +58,6 @@ public with sharing class SObjectFileMergeTriggerHandler {
      */
     public void handleBeforeDelete( List<SObject> records ) {
 
-        System.debug( 'handle before delete ' );
-
         Set<ID> recordIds = new Set<ID>();
         for ( SObject record : records ) {
             recordIds.add( record.id );
@@ -64,21 +66,15 @@ public with sharing class SObjectFileMergeTriggerHandler {
         // build map of all content document links for each record being deleted
         // and cache them in the static class variable so that it is available
         // during the 'after delete' trigger event method
-        for ( ContentDocumentLink cdl : [ SELECT id, linkedEntityId, contentDocumentId, shareType FROM ContentDocumentLink WHERE linkedEntityId IN :recordIds ] ) {
-
-            List<ContentDocumentLink> cdls = contentDocumentLinksMap.get( cdl.linkedEntityId );
-            if ( cdls == null ) {
-                cdls = new List<ContentDocumentLink>();
+        for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility FROM ContentDocumentLink WHERE linkedEntityId IN :recordIds ] ) {
+            for ( ContentDocumentLink cdl : cdls ) {
+                addElementToListInMap( contentDocumentLinksMap, cdl.linkedEntityId, cdl );
             }
-            cdls.add( cdl );
-
-            contentDocumentLinksMap.put( cdl.linkedEntityId, cdls );
-
         }
 
-        System.debug( contentDocumentLinksMap );
-
     }
+
+    // -----------------------------------------------------
 
     /**
      * Iterates over the deleted records and for any who have
@@ -87,9 +83,28 @@ public with sharing class SObjectFileMergeTriggerHandler {
      */
     public void handleAfterDelete( List<SObject> records ) {
 
-        System.debug( 'handle after delete ' );
+        Set<ID> masterRecordIds = new Set<ID>();
 
-        System.debug( contentDocumentLinksMap );
+        for ( SObject record : records ) {
+
+            String masterRecordId = String.valueOf( record.get( 'masterRecordId' ) );
+
+            // was record deleted because it was merged into another?
+            if ( String.isNotBlank( masterRecordId ) ) {
+                masterRecordIds.add( masterRecordId );
+            }
+
+        }
+
+        // map of master record ids and which document ids have already been shared to them
+        // so that we can avoid re-sharing documents to same entity again (will cause error if we did)
+        Map<ID, Set<ID>> masterContentDocumentLinksMap = new Map<ID, Set<ID>>();
+
+        for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility, isDeleted FROM ContentDocumentLink WHERE linkedEntityId IN :masterRecordIds ] ) {
+            for ( ContentDocumentLink cdl : cdls ) {
+                addElementToSetInMap( masterContentDocumentLinksMap, cdl.linkedEntityId, cdl.contentDocumentId );
+            }
+        }
 
         List<ContentDocumentLink> contentDocumentLinksToInsert = new List<ContentDocumentLink>();
 
@@ -107,11 +122,18 @@ public with sharing class SObjectFileMergeTriggerHandler {
 
                     for ( ContentDocumentLink cdl : cdls ) {
 
-                        contentDocumentLinksToInsert.add( new ContentDocumentLink(
-                            linkedEntityId = masterRecordId,
-                            contentDocumentId = cdl.contentDocumentId,
-                            shareType = cdl.shareType
-                        ));
+                        Set<ID> alreadySharedDocumentIds = masterContentDocumentLinksMap.get( masterRecordId );
+
+                        if ( alreadySharedDocumentIds == null || !alreadySharedDocumentIds.contains( cdl.contentDocumentId ) ) {
+
+                            contentDocumentLinksToInsert.add( new ContentDocumentLink(
+                                linkedEntityId = masterRecordId,
+                                contentDocumentId = cdl.contentDocumentId,
+                                shareType = cdl.shareType,
+                                visibility = cdl.visibility
+                            ));
+
+                        }
 
                     }
 
@@ -124,6 +146,42 @@ public with sharing class SObjectFileMergeTriggerHandler {
         if ( contentDocumentLinksToInsert.size() > 0 ) {
             insert contentDocumentLinksToInsert;
         }
+
+    }
+
+    // -----------------------------------------------------
+
+    /**
+     * Convenience method for the idiom of adding elements to a list in a map.
+     */
+    private static void addElementToListInMap( Map<ID, List<ContentDocumentLink>> someMap, ID someKey, ContentDocumentLink someValue ) {
+
+        List<ContentDocumentLink> someList = someMap.get( someKey );
+
+        if ( someList == null ) {
+            someList = new List<ContentDocumentLink>();
+        }
+
+        someList.add( someValue );
+
+        someMap.put( someKey, someList );
+
+    }
+
+    /**
+     * Convenience method for the idiom of adding elements to a set in a map.
+     */
+    private static void addElementToSetInMap( Map<ID, Set<ID>> someMap, ID someKey, ID someValue ) {
+
+        Set<ID> someList = someMap.get( someKey );
+
+        if ( someList == null ) {
+            someList = new Set<ID>();
+        }
+
+        someList.add( someValue );
+
+        someMap.put( someKey, someList );
 
     }
 
