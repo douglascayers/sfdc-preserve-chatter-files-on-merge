@@ -65,13 +65,17 @@ public with sharing class SObjectFileMergeTriggerHandler {
             recordIds.add( record.id );
         }
 
-        // build map of all content document links for each record being deleted
-        // and cache them in the static class variable so that it is available
-        // during the 'after delete' trigger event method
-        for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility FROM ContentDocumentLink WHERE linkedEntityId IN :recordIds ] ) {
-            for ( ContentDocumentLink cdl : cdls ) {
-                addElementToListInMap( contentDocumentLinksMap, cdl.linkedEntityId, cdl );
+        if ( recordIds.size() > 0 ) {
+
+            // build map of all content document links for each record being deleted
+            // and cache them in the static class variable so that it is available
+            // during the 'after delete' trigger event method
+            for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility FROM ContentDocumentLink WHERE linkedEntityId IN :recordIds ] ) {
+                for ( ContentDocumentLink cdl : cdls ) {
+                    addElementToListInMap( contentDocumentLinksMap, cdl.linkedEntityId, cdl );
+                }
             }
+
         }
 
     }
@@ -98,42 +102,46 @@ public with sharing class SObjectFileMergeTriggerHandler {
 
         }
 
-        // map of master record ids and which document ids have already been shared to them
-        // so that we can avoid re-sharing documents to same entity again (will cause error if we did)
-        Map<ID, Set<ID>> masterContentDocumentLinksMap = new Map<ID, Set<ID>>();
+        if ( masterRecordIds.size() > 0 ) {
 
-        for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility, isDeleted FROM ContentDocumentLink WHERE linkedEntityId IN :masterRecordIds ] ) {
-            for ( ContentDocumentLink cdl : cdls ) {
-                addElementToSetInMap( masterContentDocumentLinksMap, cdl.linkedEntityId, cdl.contentDocumentId );
+            // map of master record ids and which document ids have already been shared to them
+            // so that we can avoid re-sharing documents to same entity again (will cause error if we did)
+            Map<ID, Set<ID>> masterContentDocumentLinksMap = new Map<ID, Set<ID>>();
+
+            for ( List<ContentDocumentLink> cdls : [ SELECT id, linkedEntityId, contentDocumentId, shareType, visibility, isDeleted FROM ContentDocumentLink WHERE linkedEntityId IN :masterRecordIds ] ) {
+                for ( ContentDocumentLink cdl : cdls ) {
+                    addElementToSetInMap( masterContentDocumentLinksMap, cdl.linkedEntityId, cdl.contentDocumentId );
+                }
             }
-        }
 
-        List<ContentDocumentLink> contentDocumentLinksToInsert = new List<ContentDocumentLink>();
+            List<ContentDocumentLink> contentDocumentLinksToInsert = new List<ContentDocumentLink>();
 
-        for ( SObject record : records ) {
+            for ( SObject record : records ) {
 
-            String masterRecordId = String.valueOf( record.get( 'masterRecordId' ) );
+                String masterRecordId = String.valueOf( record.get( 'masterRecordId' ) );
 
-            // was record deleted because it was merged into another?
-            if ( String.isNotBlank( masterRecordId ) ) {
+                // was record deleted because it was merged into another?
+                if ( String.isNotBlank( masterRecordId ) ) {
 
-                // share deleted record's content documents with master record
-                List<ContentDocumentLink> cdls = contentDocumentLinksMap.get( record.id );
+                    // share deleted record's content documents with master record
+                    List<ContentDocumentLink> cdls = contentDocumentLinksMap.get( record.id );
 
-                if ( cdls != null ) {
+                    if ( cdls != null ) {
 
-                    for ( ContentDocumentLink cdl : cdls ) {
+                        for ( ContentDocumentLink cdl : cdls ) {
 
-                        Set<ID> alreadySharedDocumentIds = masterContentDocumentLinksMap.get( masterRecordId );
+                            Set<ID> alreadySharedDocumentIds = masterContentDocumentLinksMap.get( masterRecordId );
 
-                        if ( alreadySharedDocumentIds == null || !alreadySharedDocumentIds.contains( cdl.contentDocumentId ) ) {
+                            if ( alreadySharedDocumentIds == null || !alreadySharedDocumentIds.contains( cdl.contentDocumentId ) ) {
 
-                            contentDocumentLinksToInsert.add( new ContentDocumentLink(
-                                linkedEntityId = masterRecordId,
-                                contentDocumentId = cdl.contentDocumentId,
-                                shareType = cdl.shareType,
-                                visibility = cdl.visibility
-                            ));
+                                contentDocumentLinksToInsert.add( new ContentDocumentLink(
+                                        linkedEntityId = masterRecordId,
+                                        contentDocumentId = cdl.contentDocumentId,
+                                        shareType = cdl.shareType,
+                                        visibility = cdl.visibility
+                                ) );
+
+                            }
 
                         }
 
@@ -143,10 +151,10 @@ public with sharing class SObjectFileMergeTriggerHandler {
 
             }
 
-        }
+            if ( contentDocumentLinksToInsert.size() > 0 ) {
+                insert contentDocumentLinksToInsert;
+            }
 
-        if ( contentDocumentLinksToInsert.size() > 0 ) {
-            insert contentDocumentLinksToInsert;
         }
 
     }

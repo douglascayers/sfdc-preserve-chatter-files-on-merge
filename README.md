@@ -18,11 +18,15 @@ Related Ideas:
 Packaged Release History
 ========================
 
-Release 1.2 (current)
+Release 1.3 (current)
 -----------
 * Install package
-  * [Production URL](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Thx)
-  * [Sandbox URL](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Thx)
+  * [Production URL](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Ti2)
+  * [Sandbox URL](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf40000008Ti2)
+* Avoid query exception when user deletes a Person Account ([issue 3](https://github.com/DouglasCAyers/sfdc-preserve-chatter-files-on-merge/issues/3))
+
+Release 1.2
+-----------
 * Avoids attempting to re-share document to master record if document is already shared to it ([issue 1](https://github.com/DouglasCAyers/sfdc-preserve-chatter-files-on-merge/issues/1))
 
 Release 1.1
