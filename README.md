@@ -60,3 +60,16 @@ Select master record:
 Merge accounts and preserve related files:
 ![screen shot](images/merge3.png)
 
+
+Credits
+=======
+
+[Doug Ayers](https://douglascayers.com) develops and maintains the project.
+
+[Gorav Seth](https://success.salesforce.com/0D53A00002uKsks) identified the need for this solution. 
+
+
+License
+=======
+
+The source code is licensed under the [BSD 3-Clause License](LICENSE)
