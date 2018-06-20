@@ -1,3 +1,9 @@
+---
+
+As of [Summer '18](http://docs.releasenotes.salesforce.com/en-us/summer18/release-notes/rn_files_merge_records.htm#rn_files_merge_records), Salesforce now preserves files when merging records.
+
+---
+
 Preserve Related Files on Account, Contact, or Lead Merge
 =========================================================
 
